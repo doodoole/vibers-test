@@ -134,12 +134,45 @@ input {
   border-top: 0.1rem solid #999;
   margin: 0 0 2rem 0;
 }
-.btn
+.testForm .btn
 {
   line-height: 0
 }
-@-moz-document url-prefix() {
- .btn{
+.invalidField{
+  color: #ff0000;
+  text-align: left;
+}
+.commentField{
+  background: #fff;
+  height: 200px;
+}
+.resultArea{
+  text-align:left;
+  background: #fff;
+  padding: 10px;
+  border-radius: 4px;
+}
+.salary {
+  display: inline-block;
+  padding: 0 10px;
+  &.lower {
+    background: #ff0000;
+    color: #fff;
+  }
+  &.average {
+    background: #ffff00;
+    color: #000;
+  }
+  &.higher {
+    background: #00ff00;
+    color: #000;
+  }
+}
+.marginTop20{
+  margin-top: 20px;
+}
+@-oz-document url-prefix() {
+.testForm .btn{
   line-height: 30px;
 }
 }
