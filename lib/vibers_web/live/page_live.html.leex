@@ -1,0 +1,63 @@
+<section class="phx-hero">
+  <form phx-change="change" class="testForm">
+    <h2>Prijava</h2>
+    <input type="text" name="name" value="<%= @name %>" placeholder="Ime" />
+    <%= if @name_check == "" do %><p style="color: #ff0000; text-align: left;">Unos za polje ime nije validan</p><%= end %>
+    <input type="text" name="surname" value="<%= @surname %>" placeholder="Prezime" />
+    <%= if @surname_check == "" do %><p style="color: #ff0000; text-align: left;">Unos za polje prezime nije validan</p><%= end %>
+    <div class="datepickerHolder">
+    <div class="datepickerTitle">Datum rođenja: </div><input class="datepicker" type="date" id="date_of_birth" name="date_of_birth" value="<%= @date_of_birth %>"/>
+  </div>
+  <%= if @date_of_birth_check == "" do %><p style="color: #ff0000; text-align: left;">Unos za polje datum rođenja nije validan</p><%= end %>
+    <input type="number" name="household_no" min=0 value="<%= @household_no %>" placeholder="Broj ukućana" />
+    <%= if @household_check == "" do %><p style="color: #ff0000; text-align: left;">Unos za polje broj ukućana nije validan</p><%= end %>
+    <input type="number" name="salary" min=0 value="<%= @salary %>" placeholder="Plata (prosečna - 1000)" />
+    <%= if @salary_check && !@salary_valid do %><p style="color: #ff0000; text-align: left;">Unos za polje plata nije validan</p><% end %>
+    <textarea name="comment" placeholder="Comment" style="background: #fff;height: 200px;"><%= @comment %></textarea>
+     <%= if @comment_check == "" do %><p style="color: #ff0000; text-align: left;">Unos za polje komentar nije validan</p><%= end %>
+    <hr>
+    <div style="text-align:left;background: #fff;padding: 10px;border-radius: 4px;">
+      <p>Ime: <%= @name %></p>
+      <p>Prezime: <%= @surname %></p>
+      <p>Datum rođenja: <%= @date_of_birth %></p>
+      <p>Broj ukućana: <%= @household_no %></p>
+      <p style="display:inline;">Plata: <%= @salary %>
+      <%= if @salary != 0 && @salary != "" do %>
+        <%= if @salary < 1000 do %>
+          <div style="display: inline-block;padding: 0 10px;background:#ff0000; color:#fff;">MANJA OD PROSEČNE</div>
+        <% else %>
+          <%= if @salary == 1000 do %>
+            <div style="display: inline-block;padding: 0 10px;background:#ffff00; color:#000;">PROSEČNA</div>
+          <% else %>
+            <div style="display: inline-block;padding: 0 10px;background:#00ff00; color:#000;">VEĆA OD PROSEČNE</div>
+          <% end %>
+        <% end %>
+      <% end %>
+      <div class="commentHolder">
+        <div class="commentCell">Komentar:</div><div class="commentCell"><%= @comment %></div>
+      </div>
+      <br>
+    </div>
+    <button style="margin-top: 20px;" type="button" <%= if @name == "" or @surname == "" or @household_check =="" or !@salary_check or !@salary_valid or @date_of_birth == "" or @comment == "" do %>disabled="true"<% end %> class="btn btn-primary" data-toggle="modal" data-target="#myModal">Prijavi se</button>
+  </form>
+</section>
+  <!-- Modal -->
+  <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog modal-sm">
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Prijava</h4>
+        </div>
+        <div class="modal-body">
+          <p>Da li želite da nastavite?</p>
+        </div>
+        <div class="modal-footer">
+          <div type="button" class="btn btn-danger" data-dismiss="modal">NE</div>
+          <a href="thankyou" class="btn btn-success">DA</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
