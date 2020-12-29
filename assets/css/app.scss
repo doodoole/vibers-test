@@ -86,11 +86,11 @@
   display: none;
 }
 .invalid-feedback {
-  color: #a94442;
+  color: #ff0000;
   display: block;
   margin: -1rem 0 2rem;
 }
-.datepickerHolder{
+.datePickerHolder{
   background: #ffffff;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -103,12 +103,21 @@
   display: inline-block;
   text-align: left;
 }
+.timepicker,
 .datepicker{
-   display: inline-block;
+  display: inline-block;
   border: none;
-  border-radius: 0;
-  width: calc(100% - 150px);
-  margin-bottom: 0;
+  text-align: center;
+  /*margin-bottom: 0;*/
+  /*width: 100%;*/
+  /*padding: 3px 0;*/
+  border: none;
+}
+.datepicker:focus{
+  /*border: 1px solid #0069d9;*/
+}
+.datetime-edit-field:active{
+  background:#ff0000;
 }
 input {
   outline: none;
@@ -123,20 +132,21 @@ input {
 .commentHolder{
   display: table;
 }
-.commentCell{
+.commentCell {
   display: table-cell;
-  padding: 2.6rem 0; 
+  padding: 2.6rem 0;
+  &:nth-child(2) {
+    padding: 2.6rem 10px;
+  }
 }
-.commentCell:nth-child(2){
-  padding: 2.6rem 10px;
-}
-.testForm hr{
-  border-top: 0.1rem solid #999;
-  margin: 0 0 2rem 0;
-}
-.testForm .btn
-{
-  line-height: 0
+.testForm {
+  hr {
+    border-top: 0.1rem solid #999;
+    margin: 0 0 2rem 0;
+  }
+  .btn {
+    line-height: 0;
+  }
 }
 .invalidField{
   color: #ff0000;
@@ -154,18 +164,17 @@ input {
 }
 .salary {
   display: inline-block;
-  padding: 0 10px;
+  padding: 10px 20px;
+  color: #fff;
   &.lower {
-    background: #ff0000;
-    color: #fff;
+    background: #ea5026;
   }
   &.average {
-    background: #ffff00;
     color: #000;
+    background: #fec609;
   }
   &.higher {
-    background: #00ff00;
-    color: #000;
+    background: #6db911;
   }
 }
 .marginTop20{
@@ -175,4 +184,17 @@ input {
 .testForm .btn{
   line-height: 30px;
 }
+}
+input[type=date]::-webkit-inner-spin-button, 
+input[type=date]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+}
+.leapYear{
+  padding:10px 20px;
+  background: #6480ba;
+  color:#fff;
+}
+.flatpickr-calendar{
+  left:calc(50% - 150px) !important;
 }

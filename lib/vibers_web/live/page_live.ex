@@ -1,56 +1,63 @@
 defmodule VibersWeb.PageLive do
   use VibersWeb, :live_view
+  use Timex
+  alias Vibers.List
+  alias Vibers.List.Person
 
   @impl true
   def mount(_params, _session, socket) do
     {:ok, assign(
       socket,
-      name: "",
-      name_check: false,
-      surname: "",
-      surname_check: false,
-      household_no: "",
-      household_check: false,
-      salary: "",
-      comment: "",
-      comment_check: false,
-      salary_check: false,
-      salary_valid: false,
+      changeset: List.change_person(%Person{}),
       date_of_birth: "",
-      date_of_birth_check: false,
-      date_of_birth_valid: false
+      time_of_birth: "",
+      salary_status: nil,
+      salary_status_class: ""
     )}
   end
 
+   def to_usa_date(%Date{day: day, month: month, year: year}) do
+    "~2..0B/~2..0B/~4..0B"
+    |> :io_lib.format([month, day, year])
+    |> to_string()
+  end
+  
+  def to_usa_time(%Time{} = time) do
+    period = (time.hour < 12 && "am") || "pm"
+    hour = time.hour |> rem(12)
+
+    "~2..0B:~2..0B ~2..0s"
+    |> :io_lib.format([hour, time.minute, period])
+    |> to_string()
+  end
+
   @impl true
-  def handle_event("change", %{
-    "name" => name,
-    "surname" => surname,
-    "household_no" => household_no,
-    "salary" => salary,
-    "comment" => comment,
-    "date_of_birth" => date_of_birth
-  }, socket) do
-    {salary, salary_check, salary_valid} = case Integer.parse(salary) do
-      {value, _} -> {value, true, true}
-      _ -> {"", true, false}
+  def handle_event("validate", %{"person" => params}, socket) do
+    {salary_status, salary_status_class} = case Map.get(params, "salary") do
+      nil -> {nil, ""}
+      salary -> case Integer.parse(salary) do
+        {value, _} ->
+          cond do
+            value == 1000 -> {"Prosečna", "average"}
+            value < 1000 -> {"Manja od prosečne", "lower"}
+            value > 1000 -> {"Veća od prosečne", "higher"}
+            true -> {nil, ""}
+          end
+        _ -> {nil, ""}
+      end
     end
+
+
+    changeset =
+      %Person{}
+      |> List.change_person(params)
+      |> Map.put(:action, :insert)
 
     {:noreply, assign(
       socket,
-      name: name,
-      name_check: name,
-      surname: surname,
-      surname_check: surname,
-      household_no: household_no,
-      household_check: household_no,
-      salary: salary,
-      comment: comment,
-      comment_check: comment,
-      salary_check: salary_check,
-      salary_valid: salary_valid,
-      date_of_birth: date_of_birth,
-      date_of_birth_check: date_of_birth
+      changeset: changeset,
+      salary_status: salary_status,
+      salary_status_class: salary_status_class
     )}
   end
 end

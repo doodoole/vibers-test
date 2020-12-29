@@ -1,45 +1,66 @@
 <section class="phx-hero">
-  <form phx-change="change" class="testForm">
-    <h2>Prijava</h2>
-    <input type="text" name="name" value="<%= @name %>" placeholder="Ime" />
-    <%= if @name_check == "" do %><p class="invalidField">Unos za polje ime nije validan</p><%= end %>
-    <input type="text" name="surname" value="<%= @surname %>" placeholder="Prezime" />
-    <%= if @surname_check == "" do %><p class="invalidField">Unos za polje prezime nije validan</p><%= end %>
-    <div class="datepickerHolder">
-    <div class="datepickerTitle">Datum rođenja: </div><input class="datepicker" type="date" id="date_of_birth" name="date_of_birth" value="<%= @date_of_birth %>"/>
-  </div>
-  <%= if @date_of_birth_check == "" do %><p class="invalidField">Unos za polje datum rođenja nije validan</p><%= end %>
-    <input type="number" name="household_no" min=0 value="<%= @household_no %>" placeholder="Broj ukućana" />
-    <%= if @household_check == "" do %><p class="invalidField">Unos za polje broj ukućana nije validan</p><%= end %>
-    <input type="number" name="salary" min=0 value="<%= @salary %>" placeholder="Plata (prosečna - 1000)" />
-    <%= if @salary_check && !@salary_valid do %><p class="invalidField">Unos za polje plata nije validan</p><% end %>
-    <textarea name="comment" placeholder="Comment" class="commentField"><%= @comment %></textarea>
-     <%= if @comment_check == "" do %><p class="invalidField">Unos za polje komentar nije validan</p><%= end %>
-    <hr>
-    <div class="resultArea">
-      <p>Ime: <%= @name %></p>
-      <p>Prezime: <%= @surname %></p>
-      <p>Datum rođenja: <%= @date_of_birth %></p>
-      <p>Broj ukućana: <%= @household_no %></p>
-      <p style="display:inline;">Plata: <%= @salary %>
-      <%= if @salary != 0 && @salary != "" do %>
-        <%= if @salary < 1000 do %>
-          <div class="salary lower">MANJA OD PROSEČNE</div>
-        <% else %>
-          <%= if @salary == 1000 do %>
-            <div class="salary average">PROSEČNA</div>
-          <% else %>
-            <div class="salary higher">VEĆA OD PROSEČNE</div>
+
+    <%= f = form_for @changeset, "#", [phx_change: :validate] %>
+      <h2>Prijava</h2>
+
+      <%= label f, :name, "Ime" %>
+      <%= text_input f, :name %>
+      <%= error_tag f, :name %>
+
+      <%= label f, :surname, "Prezime" %>
+      <%= text_input f, :surname %>
+      <%= error_tag f, :surname %>
+
+      <%= label f, :date_of_birth, "Datum rođenja" %>
+      <%= text_input f, :date_of_birth , placeholder: "yyyy-mm-dd", class: "datepicker" %>
+      <%= error_tag f, :date_of_birth %>
+
+      <%= label f, :time_of_birth, "Vreme rođenja" %>
+      <%= text_input f, :time_of_birth , placeholder: "hh:mm:ss", class: "timepicker" %>
+      <%= error_tag f, :time_of_birth %>
+
+      <%= label f, :household_no, "Broj ukućana" %>
+      <%= number_input f, :household_no , min: '1' %>
+      <%= error_tag f, :household_no %>
+
+      <%= label f, :salary, "Plata" %>
+      <%= number_input f, :salary, min: '1', placeholder: "(1000 - Prosečna)" %>
+      <%= error_tag f, :salary %>
+
+      <%= label f, :comment, "Komentar" %>
+      <%= textarea f, :comment , [class: "commentField"] %>
+      <%= error_tag f, :comment %>
+    </form>
+
+
+
+    <%= if @changeset.valid? do %>
+      <hr>
+      <div class="resultArea">
+        <p>Ime: <%= Map.get(@changeset.changes, :name) %></p>
+        <p>Prezime: <%= Map.get(@changeset.changes, :surname) %></p>
+        <p>Datum rođenja: <%= to_usa_date(Map.get(@changeset.changes, :date_of_birth)) %>
+         <%= if Timex.is_leap?(Map.get(@changeset.changes, :date_of_birth)) do %>
+          <span class="leapYear">Prestupna</span>
           <% end %>
+        </p>
+        <p>Vreme rođenja: <%= to_usa_time(Map.get(@changeset.changes, :time_of_birth)) %>
+         
+        </p>
+
+        
+        <p>Broj ukućana: <%= Map.get(@changeset.changes, :household_no) %></p>
+        <p style="display:inline;">Plata: <span class="salary <%= @salary_status_class %>" ><%= Map.get(@changeset.changes, :salary) %>
+        <%= if @salary_status do %>
+          / <%= @salary_status %></span>
         <% end %>
-      <% end %>
-      <div class="commentHolder">
-        <div class="commentCell">Komentar:</div><div class="commentCell"><%= @comment %></div>
+        <div class="commentHolder">
+          <div class="commentCell">Komentar:</div><div class="commentCell"><%= Map.get(@changeset.changes, :comment) %></div>
+        </div>
+        <br>
       </div>
-      <br>
-    </div>
-    <button class="marginTop20" type="button" <%= if @name == "" or @surname == "" or @household_check =="" or !@salary_check or !@salary_valid or @date_of_birth == "" or @comment == "" do %>disabled="true"<% end %> class="btn btn-primary" data-toggle="modal" data-target="#myModal">Prijavi se</button>
-  </form>
+    <% end %>
+    <button class="marginTop20" type="button" <%= if !@changeset.valid? do %>disabled="true"<% end %> class="btn btn-primary" data-toggle="modal" data-target="#myModal">Prijavi se</button>
 </section>
   <!-- Modal -->
   <div class="modal fade" id="myModal" role="dialog">
